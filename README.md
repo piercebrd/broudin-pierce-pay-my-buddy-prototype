@@ -4,11 +4,11 @@ This repository contains the database and application prototype for **Pay My Bud
 
 ## Contents
 
-- 🧱 Physical Data Model (see below)
-- 🧾 SQL scripts to create the schema
-- ☕ Java DAL (Data Access Layer) with transaction handling
-- 🔐 Secure DB connection
-- 🌐 Web interface using DAL logic
+- Physical Data Model (see below)
+- SQL scripts to create the schema
+- Java DAL (Data Access Layer) with transaction handling
+- Secure DB connection
+- Web interface using DAL logic
 
 ---
 
@@ -20,7 +20,7 @@ The following diagram represents the physical data model for the Pay My Buddy pr
 
 ![Physical Data Model](mpd-diagram.png)
 
-### 🗃️ Tables and Attributes
+### Tables and Attributes
 
 #### `users`
 

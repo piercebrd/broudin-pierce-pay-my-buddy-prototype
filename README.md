@@ -65,3 +65,18 @@ The following diagram represents the physical data model for the Pay My Buddy pr
 - Users can connect to each other (many-to-many) via the `connections` table.
 - All foreign keys are defined to ensure referential integrity.
 
+---
+
+## Database Backup & Restore
+
+To create a full backup of the `paymybuddy` database:
+
+```bash
+mysqldump -u root -p paymybuddy > backup.sql
+```
+
+To restore the database from the backup file:
+
+```bash
+mysql -u root -p paymybuddy < backup.sql
+```

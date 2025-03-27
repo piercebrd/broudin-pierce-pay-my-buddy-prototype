@@ -2,6 +2,7 @@ package com.paymybuddy.backend.controller;
 
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.UserRepository;
+import com.paymybuddy.backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,18 @@ public class AuthController {
         return "User registered successfully.";
     }
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public String login(@RequestBody User user) {
+        System.out.println(">>> LOGIN CONTROLLER HIT <<<");
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Password: " + user.getPassword());
         Optional<User> existing = userRepository.findByEmail(user.getEmail());
         if (existing.isPresent() &&
                 passwordEncoder.matches(user.getPassword(), existing.get().getPassword())) {
-            return "Login successful.";
+            return jwtUtil.generateToken(user.getEmail());
         }
         return "Invalid credentials.";
     }

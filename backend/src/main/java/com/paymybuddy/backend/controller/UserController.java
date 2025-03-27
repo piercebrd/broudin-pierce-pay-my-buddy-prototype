@@ -5,6 +5,7 @@ import com.paymybuddy.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,13 @@ public class UserController {
     @GetMapping("/{id}")
     public Optional<User> getUserById(@PathVariable Long id) {
         return userService.findById(id);
+    }
+
+    @GetMapping("/{userId}/balance")
+    public BigDecimal getUserBalance(@PathVariable Long userId) {
+        return userService.findById(userId)
+                .map(User::getBalance)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @DeleteMapping("/{id}")

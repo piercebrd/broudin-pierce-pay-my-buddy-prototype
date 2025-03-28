@@ -23,12 +23,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login","/signin",
-                                "/signin-form").permitAll()
+                        .requestMatchers("/api/users/register", "/api/users/login","/login",
+                                "/login-form").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable());
-               // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .formLogin(form -> form.disable())
+               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

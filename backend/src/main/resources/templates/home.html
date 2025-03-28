@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - Pay My Buddy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .home-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    .home-container h1 {
+      background-color: #f4a832;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .home-container p {
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+
+    .logout-button {
+      margin-top: 25px;
+      background-color: #e04f5f;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout-button:hover {
+      background-color: #c93d4c;
+    }
+  </style>
+</head>
+<body>
+<div class="home-container">
+  <h1>Welcome to Pay My Buddy</h1>
+
+  <p th:if="${email != null}">
+    Logged in as: <strong th:text="${email}"></strong>
+  </p>
+
+  <form action="/logout" method="get">
+    <button class="logout-button">Log Out</button>
+  </form>
+</div>
+</body>
+</html>

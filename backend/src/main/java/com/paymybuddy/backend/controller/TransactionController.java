@@ -32,4 +32,9 @@ public class TransactionController {
                 saved.getCreatedAt()
         );
     }
+
+    @GetMapping("/user/{userId}")
+    public List<TransactionDTO> getUserTransactions(@PathVariable Long userId) {
+        return transactionService.getUserTransactions(userId);
+    }
 }

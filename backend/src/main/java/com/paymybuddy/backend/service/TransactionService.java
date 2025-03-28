@@ -1,5 +1,6 @@
 package com.paymybuddy.backend.service;
 
+import com.paymybuddy.backend.dto.TransactionDTO;
 import com.paymybuddy.backend.entity.Transaction;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.TransactionRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -53,6 +55,25 @@ public class TransactionService {
         userRepository.save(receiver);
 
         return transactionRepository.save(transaction);
+    }
+
+    public List<TransactionDTO> getUserTransactions(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Transaction> all = transactionRepository.findAll();
+
+        return all.stream()
+                .filter(tx -> tx.getSender().getId().equals(userId) || tx.getReceiver().getId().equals(userId))
+                .map(tx -> new TransactionDTO(
+                        tx.getId(),
+                        tx.getSender().getId(),
+                        tx.getReceiver().getId(),
+                        tx.getDescription(),
+                        tx.getAmount(),
+                        tx.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
 

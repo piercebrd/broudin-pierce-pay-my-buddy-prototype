@@ -14,4 +14,12 @@ public class UserDTO {
         this.email = email;
         this.balance = balance;
     }
+
+    public Long getId() {return id;}
+
+    public String getUsername() {return username;}
+
+    public String getEmail() {return email;}
+
+    public BigDecimal getBalance() {return balance;}
 }

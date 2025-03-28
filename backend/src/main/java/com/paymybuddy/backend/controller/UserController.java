@@ -1,5 +1,6 @@
 package com.paymybuddy.backend.controller;
 
+import com.paymybuddy.backend.dto.UserDTO;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class UserController {
     public String deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
         return "User deleted.";
+    }
+
+    @GetMapping("/me")
+    public UserDTO getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        return userService.getCurrentUser(authHeader);
     }
 }

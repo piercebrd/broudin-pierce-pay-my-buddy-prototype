@@ -1,4 +1,4 @@
-package com.paymybuddy.backend.controller;
+package com.paymybuddy.backend.controller.rest;
 
 import com.paymybuddy.backend.dto.TransactionDTO;
 import com.paymybuddy.backend.entity.Transaction;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
-public class TransactionController {
+public class TransactionRestController {
 
     @Autowired
     private TransactionService transactionService;

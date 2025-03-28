@@ -1,4 +1,4 @@
-package com.paymybuddy.backend.controller;
+package com.paymybuddy.backend.controller.rest;
 
 import com.paymybuddy.backend.dto.UserDTO;
 import com.paymybuddy.backend.entity.User;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class UserRestController {
 
     @Autowired
     private UserService userService;

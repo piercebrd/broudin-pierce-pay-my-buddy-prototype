@@ -2,41 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Home - Pay My Buddy</title>
+  <title>Page de transfert</title>
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      background-color: #f4f4f4;
+    }
+
+    .navbar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      height: 100vh;
-    }
-
-    .home-container {
       background-color: white;
-      padding: 2rem;
+      padding: 15px 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: black;
+    }
+
+    .navbar a.active {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 400px;
-      text-align: center;
     }
 
-    .home-container h1 {
-      background-color: #f4a832;
-      color: white;
+    .form-section {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      justify-content: space-between;
+    }
+
+    .form-section input,
+    .form-section select {
+      flex: 1;
       padding: 10px;
-      border-radius: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
-    .home-container p {
-      margin-top: 20px;
-      font-size: 1.1rem;
-    }
-
-    .logout-button {
-      margin-top: 25px;
-      background-color: #e04f5f;
+    .form-section button {
+      background-color: #4285f4;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -44,22 +63,63 @@
       cursor: pointer;
     }
 
-    .logout-button:hover {
-      background-color: #c93d4c;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-<div class="home-container">
-  <h1>Welcome to Pay My Buddy</h1>
 
-  <p th:if="${email != null}">
-    Logged in as: <strong th:text="${email}"></strong>
-  </p>
-
-  <form action="/logout" method="get">
-    <button class="logout-button">Log Out</button>
-  </form>
+<div class="navbar">
+  <div>Pay My Buddy</div>
+  <div>
+    <a href="#" class="active">Transférer</a>
+    <a href="#">Profil</a>
+    <a href="#">Ajouter relation</a>
+    <a href="/logout">Se déconnecter</a>
+  </div>
 </div>
+
+<div class="container">
+  <form class="form-section" th:action="@{/transfer}" method="post">
+    <select name="friendEmail" required>
+      <option value="" disabled selected>Sélectionner une relation</option>
+      <option th:each="f : ${friends}" th:value="${f.email}" th:text="${f.username}"></option>
+    </select>
+    <input type="text" name="description" placeholder="Description" required />
+    <input type="number" name="amount" min="0.01" step="0.01" placeholder="0€" required />
+    <button type="submit">Payer</button>
+  </form>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Relations</th>
+      <th>Description</th>
+      <th>Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${transactions}">
+      <td th:text="${t.receiver.username}">Nom</td>
+      <td th:text="${t.description}">Description</td>
+      <td th:text="${t.amount + '€'}">0€</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
 </body>
 </html>

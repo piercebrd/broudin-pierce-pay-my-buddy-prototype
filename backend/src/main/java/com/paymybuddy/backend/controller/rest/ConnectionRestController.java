@@ -1,4 +1,4 @@
-package com.paymybuddy.backend.controller;
+package com.paymybuddy.backend.controller.rest;
 
 import com.paymybuddy.backend.entity.Connection;
 import com.paymybuddy.backend.service.ConnectionService;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/connections")
-public class ConnectionController {
+public class ConnectionRestController {
 
     @Autowired
     private ConnectionService connectionService;

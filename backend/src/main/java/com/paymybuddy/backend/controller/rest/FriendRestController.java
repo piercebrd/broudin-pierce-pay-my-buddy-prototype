@@ -1,7 +1,6 @@
-package com.paymybuddy.backend.controller;
+package com.paymybuddy.backend.controller.rest;
 
 import com.paymybuddy.backend.dto.UserDTO;
-import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/friends")
-public class FriendController {
+public class FriendRestController {
 
     @Autowired
     private FriendService friendService;

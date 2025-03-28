@@ -1,5 +1,6 @@
 package com.paymybuddy.backend.controller;
 
+import com.paymybuddy.backend.dto.TransactionDTO;
 import com.paymybuddy.backend.entity.Transaction;
 import com.paymybuddy.backend.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,15 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.save(transaction);
+    public TransactionDTO createTransaction(@RequestBody Transaction tx) {
+        Transaction saved = transactionService.save(tx);
+        return new TransactionDTO(
+                saved.getId(),
+                saved.getSender().getId(),
+                saved.getReceiver().getId(),
+                saved.getDescription(),
+                saved.getAmount(),
+                saved.getCreatedAt()
+        );
     }
 }

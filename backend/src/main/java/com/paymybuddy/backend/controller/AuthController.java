@@ -1,13 +1,17 @@
 package com.paymybuddy.backend.controller;
 
+import com.paymybuddy.backend.dto.LoginResponseDTO;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.UserRepository;
 import com.paymybuddy.backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,15 +39,14 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        System.out.println(">>> LOGIN CONTROLLER HIT <<<");
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Password: " + user.getPassword());
+    public ResponseEntity<?> login(@RequestBody User user) {
         Optional<User> existing = userRepository.findByEmail(user.getEmail());
-        if (existing.isPresent() &&
-                passwordEncoder.matches(user.getPassword(), existing.get().getPassword())) {
-            return jwtUtil.generateToken(user.getEmail());
+        if (existing.isPresent() && passwordEncoder.matches(user.getPassword(), existing.get().getPassword())) {
+            String token = jwtUtil.generateToken(user.getEmail());
+            User existingUser = existing.get();
+            return ResponseEntity.ok(new LoginResponseDTO(token, existingUser.getId(), existingUser.getEmail()));
         }
-        return "Invalid credentials.";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
     }
+
 }

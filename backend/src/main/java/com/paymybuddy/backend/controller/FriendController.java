@@ -1,11 +1,13 @@
 package com.paymybuddy.backend.controller;
 
+import com.paymybuddy.backend.dto.UserDTO;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/friends")
@@ -15,8 +17,10 @@ public class FriendController {
     private FriendService friendService;
 
     @GetMapping("/{userId}")
-    public List<User> getFriends(@PathVariable Long userId) {
-        return friendService.getFriends(userId);
+    public List<UserDTO> getFriends(@PathVariable Long userId) {
+        return friendService.getFriends(userId).stream()
+                .map(u -> new UserDTO(u.getId(), u.getUsername(), u.getEmail(), u.getBalance()))
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/add")

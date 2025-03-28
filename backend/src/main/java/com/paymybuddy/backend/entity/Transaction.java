@@ -28,7 +28,9 @@ public class Transaction {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-
+    public long getId() {
+        return id;
+    }
     public User getSender() {return sender;}
     public void setSender(User sender) {this.sender = sender;}
 

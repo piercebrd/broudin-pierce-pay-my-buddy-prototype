@@ -27,17 +27,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println("JwtAuthFilter executing on path: " + request.getRequestURI());
-
         String authHeader = request.getHeader("Authorization");
-        String token = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-        }
-        if (token == null || !jwtUtil.validateToken(token)) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-            System.out.println("Token is missing or invalid");
+            return;
+        }
+
+        String token = authHeader.substring(7);
+
+        if (!jwtUtil.validateToken(token)) {
+            filterChain.doFilter(request, response);
             return;
         }
 
@@ -51,3 +51,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

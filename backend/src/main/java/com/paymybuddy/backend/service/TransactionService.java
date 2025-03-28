@@ -14,13 +14,13 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
     }
-    
+
     public List<Transaction> findBySender(User sender) {
         return transactionRepository.findSenderById(sender.getId());
     }
@@ -30,11 +30,12 @@ public class TransactionService {
     }
 
     public Transaction save(Transaction transaction) {
+        Long senderId = transaction.getSender().getId();
+        Long receiverId = transaction.getReceiver().getId();
 
-        User sender = userRepository.findById(transaction.getSender().getId())
+        User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new RuntimeException("Sender not found"));
-
-        User receiver = userRepository.findById(transaction.getReceiver().getId())
+        User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
         BigDecimal amount = transaction.getAmount();
@@ -47,12 +48,13 @@ public class TransactionService {
         sender.setBalance(sender.getBalance().subtract(amount));
         receiver.setBalance(receiver.getBalance().add(amount));
 
-        // Save both users
+        // Save users and transaction
         userRepository.save(sender);
         userRepository.save(receiver);
 
         return transactionRepository.save(transaction);
     }
+
 
     public List<Transaction> getAll() {
         return transactionRepository.findAll();

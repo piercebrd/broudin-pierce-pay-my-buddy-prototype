@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ajouter un ami</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 15px 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: black;
+    }
+
+    .navbar a.active {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 100px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    input[type="email"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #f4a832;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div>Pay My Buddy</div>
+  <div>
+    <a href="/home">Transférer</a>
+    <a href="/profile">Profil</a>
+    <a href="#" class="active">Ajouter relation</a>
+    <a href="/logout">Se déconnecter</a>
+  </div>
+</div>
+
+<div class="container">
+  <h2>Chercher une relation</h2>
+  <form th:action="@{/add-friend}" method="post">
+    <input type="email" name="friendEmail" placeholder="Saisir une adresse mail" required />
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <div class="message" th:if="${message}" th:text="${message}"></div>
+  <div class="message error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+</body>
+</html>

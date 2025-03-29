@@ -93,6 +93,7 @@
 </div>
 
 <div class="container">
+  <div th:if="${error}" style="color:red; margin-bottom: 10px;" th:text="${error}"></div>
   <form class="form-section" th:action="@{/transfer}" method="post">
     <select name="friendEmail" required>
       <option value="" disabled selected>Sélectionner une relation</option>

@@ -1,8 +1,6 @@
 package com.paymybuddy.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;

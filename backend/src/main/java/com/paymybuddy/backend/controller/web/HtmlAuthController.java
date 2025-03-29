@@ -58,10 +58,10 @@ public class HtmlAuthController {
             String jwt = jwtUtil.generateToken(email);
 
             Cookie jwtCookie = new Cookie("jwt", jwt);
-            jwtCookie.setHttpOnly(true);       // Prevent JS access
-            jwtCookie.setPath("/");            // Make it available everywhere
-            jwtCookie.setMaxAge(60 * 60);      // 1 hour
-            response.addCookie(jwtCookie);     // ✅ Add it to the response
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(60 * 60);
+            response.addCookie(jwtCookie);
 
             return "redirect:/home";
         }

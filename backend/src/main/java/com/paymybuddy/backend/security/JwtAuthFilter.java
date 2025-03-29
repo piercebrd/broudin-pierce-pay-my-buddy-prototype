@@ -26,7 +26,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        System.out.println("🧪 shouldNotFilter path = " + path);
         return path.equals("/login") || path.equals("/login-form");
     }
 
@@ -42,29 +41,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            System.out.println("📥 Token from header");
         } else if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("jwt".equals(cookie.getName())) {
                     token = cookie.getValue();
-                    System.out.println("📥 Token from cookie");
                 }
             }
         }
 
         if (token != null && jwtUtil.validateToken(token)) {
             String email = jwtUtil.extractEmail(token);
-            System.out.println("✅ Token validated. User: " + email);
-
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } else {
-            System.out.println("❌ Token invalid or missing");
         }
-
         filterChain.doFilter(request, response);
     }
 

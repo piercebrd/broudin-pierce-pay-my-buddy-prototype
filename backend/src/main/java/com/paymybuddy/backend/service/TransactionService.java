@@ -7,6 +7,7 @@ import com.paymybuddy.backend.repository.TransactionRepository;
 import com.paymybuddy.backend.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,7 +31,7 @@ public class TransactionService {
     public List<Transaction> findByReceiver(User receiver) {
         return transactionRepository.findByReceiverId(receiver.getId());
     }
-
+    @Transactional
     public Transaction save(Transaction transaction) {
         Long senderId = transaction.getSender().getId();
         Long receiverId = transaction.getReceiver().getId();

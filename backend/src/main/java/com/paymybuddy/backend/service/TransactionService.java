@@ -5,7 +5,6 @@ import com.paymybuddy.backend.entity.Transaction;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.TransactionRepository;
 import com.paymybuddy.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,11 +23,11 @@ public class TransactionService {
     }
 
     public List<Transaction> findBySender(User sender) {
-        return transactionRepository.findSenderById(sender.getId());
+        return transactionRepository.findBySenderId(sender.getId());
     }
 
     public List<Transaction> findByReceiver(User receiver) {
-        return transactionRepository.findReceiverById(receiver.getId());
+        return transactionRepository.findByReceiverId(receiver.getId());
     }
 
     public Transaction save(Transaction transaction) {

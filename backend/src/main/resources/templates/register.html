@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription - Pay My Buddy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    .register-container h1 {
+      background-color: #f4a832;
+      color: white;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .register-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .register-container button {
+      background-color: #4285f4;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="register-container">
+  <h1>Pay My Buddy</h1>
+
+  <form th:action="@{/register-form}" method="post">
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="email" name="email" placeholder="Mail" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <button type="submit">S’inscrire</button>
+  </form>
+
+  <div class="error-message" th:if="${error}" th:text="${error}"></div>
+</div>
+</body>
+</html>

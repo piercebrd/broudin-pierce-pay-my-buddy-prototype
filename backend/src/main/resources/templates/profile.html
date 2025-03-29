@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 15px 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: black;
+    }
+
+    .navbar a.active {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .profile-container {
+      max-width: 600px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .profile-item label {
+      font-weight: bold;
+    }
+
+    .edit-btn {
+      background-color: #f4a832;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      float: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div>Pay My Buddy</div>
+  <div>
+    <a href="/home">Transférer</a>
+    <a href="/profile" class="active">Profil</a>
+    <a href="/add-friend">Ajouter relation</a>
+    <a href="/logout">Se déconnecter</a>
+  </div>
+</div>
+
+<div class="profile-container">
+  <div class="profile-item">
+    <label>Username</label>
+    <span th:text="'@' + ${user.username}">username</span>
+  </div>
+  <div class="profile-item">
+    <label>Mail</label>
+    <span th:text="${user.email}">nom@domain.com</span>
+  </div>
+  <div class="profile-item">
+    <label>Mot de passe</label>
+    <span>mot de passe</span> <!-- Hide actual password -->
+  </div>
+  <form th:action="@{/profile/edit}" method="get">
+    <button type="submit" class="edit-btn">Modifier</button>
+  </form>
+</div>
+
+</body>
+</html>

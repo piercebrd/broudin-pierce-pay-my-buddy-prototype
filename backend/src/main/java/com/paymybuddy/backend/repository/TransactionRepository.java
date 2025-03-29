@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findSenderById(long senderId);
-    List<Transaction> findReceiverById(long receiverId);
+    List<Transaction> findBySenderId(Long senderId);
+    List<Transaction> findByReceiverId(long receiverId);
 }

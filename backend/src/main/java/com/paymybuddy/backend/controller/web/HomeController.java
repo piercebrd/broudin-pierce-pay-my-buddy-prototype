@@ -41,27 +41,15 @@ public class HomeController {
     }
 
     @PostMapping("/transfer")
-    public String processTransfer(@RequestParam("friendEmail") String friendEmail,
-                                  @RequestParam("amount") BigDecimal amount,
-                                  @RequestParam("description") String description,
+    public String processTransfer(@RequestParam String friendEmail,
+                                  @RequestParam BigDecimal amount,
+                                  @RequestParam String description,
                                   Model model) {
-
         try {
-            String senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-            User sender = userRepository.findByEmail(senderEmail).orElseThrow();
-            User receiver = userRepository.findByEmail(friendEmail).orElseThrow();
-
-            Transaction transaction = new Transaction();
-            transaction.setSender(sender);
-            transaction.setReceiver(receiver);
-            transaction.setAmount(amount);
-            transaction.setDescription(description);
-
-            transactionService.save(transaction);
-
+            transactionService.processTransfer(friendEmail, amount, description);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return showHomePage(model); // reload page with error
+            return showHomePage(model);
         }
 
         return "redirect:/home";

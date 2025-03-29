@@ -5,6 +5,7 @@ import com.paymybuddy.backend.entity.Transaction;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.TransactionRepository;
 import com.paymybuddy.backend.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -79,4 +80,29 @@ public class TransactionService {
     public List<Transaction> getAll() {
         return transactionRepository.findAll();
     }
+
+    public void processTransfer(String friendEmail, BigDecimal amount, String description) {
+        String senderEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User sender = userRepository.findByEmail(senderEmail).orElseThrow();
+        User receiver = userRepository.findByEmail(friendEmail).orElseThrow();
+
+        if (sender.getBalance().compareTo(amount) < 0) {
+            throw new IllegalArgumentException("Fonds insuffisants.");
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setSender(sender);
+        transaction.setReceiver(receiver);
+        transaction.setAmount(amount);
+        transaction.setDescription(description);
+
+        // Update balances
+        sender.setBalance(sender.getBalance().subtract(amount));
+        receiver.setBalance(receiver.getBalance().add(amount));
+
+        userRepository.save(sender);
+        userRepository.save(receiver);
+        transactionRepository.save(transaction);
+    }
+
 }

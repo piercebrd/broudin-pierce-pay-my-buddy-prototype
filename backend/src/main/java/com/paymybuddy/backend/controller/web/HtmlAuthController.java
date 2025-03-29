@@ -113,4 +113,31 @@ public class HtmlAuthController {
         return "redirect:/login";
     }
 
+    @GetMapping("/profile/edit")
+    public String showEditProfileForm(Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        model.addAttribute("user", user);
+        return "edit-profile";
+    }
+
+    @PostMapping("/profile/edit")
+    public String updateProfile(@RequestParam String username,
+                                @RequestParam String password,
+                                Model model) {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        user.setUsername(username);
+        if (!password.isBlank()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
+
+        userRepository.save(user);
+        model.addAttribute("message", "Profil mis à jour avec succès.");
+        return "redirect:/profile";
+    }
+
+
 }

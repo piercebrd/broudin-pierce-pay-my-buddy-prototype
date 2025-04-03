@@ -33,7 +33,6 @@ public class HomeController {
         User user = userRepository.findByEmail(email).orElseThrow();
         System.out.println("Transactions: " + transactionService.findBySender(user));
 
-
         model.addAttribute("friends", friendService.getFriends(user.getId()));
         model.addAttribute("transactions", transactionService.findBySender(user));
         model.addAttribute("email", email);

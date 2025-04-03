@@ -54,7 +54,6 @@ public class HtmlAuthController {
         Optional<User> user = userRepository.findByEmail(email);
 
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            User userObj = user.get();
             String jwt = jwtUtil.generateToken(email);
 
             Cookie jwtCookie = new Cookie("jwt", jwt);

@@ -4,21 +4,55 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User {
 
-    public User() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String username;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
+
+    // NEW: Connections (Friends)
+    @ManyToMany
+    @JoinTable(
+            name = "user_connections",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private Set<User> connections = new HashSet<>();
+
+    // Getters and Setters for new field
+    public Set<User> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(Set<User> connections) {
+        this.connections = connections;
+    }
 
     public Long getId() {
         return id;
     }
 
-    private String username;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -28,9 +62,6 @@ public class User {
         this.username = username;
     }
 
-    @Column(unique = true, nullable = false)
-    private String email;
-
     public String getEmail() {
         return email;
     }
@@ -38,9 +69,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    @Column(nullable = false)
-    private String password;
 
     public String getPassword() {
         return password;
@@ -50,8 +78,6 @@ public class User {
         this.password = password;
     }
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -59,15 +85,12 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal balance = BigDecimal.ZERO;
-
     public BigDecimal getBalance() {
         return balance;
     }
-
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    // ... other getters/setters
 }

@@ -1,9 +1,8 @@
 package com.paymybuddy.backend.controller.web;
 
-import com.paymybuddy.backend.entity.Connection;
 import com.paymybuddy.backend.entity.User;
-import com.paymybuddy.backend.repository.ConnectionRepository;
 import com.paymybuddy.backend.repository.UserRepository;
+import com.paymybuddy.backend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ public class FriendController {
     private UserRepository userRepository;
 
     @Autowired
-    private ConnectionRepository connectionRepository;
+    private FriendService friendService;
 
     @GetMapping("/add-friend")
     public String addFriendPage() {
@@ -29,31 +28,11 @@ public class FriendController {
     @PostMapping("/add-friend")
     public String addFriend(@RequestParam String friendEmail, Model model) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
-        User friend = userRepository.findByEmail(friendEmail).orElse(null);
+        String result = friendService.addFriend(userEmail, friendEmail);
 
-        if (friend == null) {
-            model.addAttribute("error", "No user found with this email.");
-            return "add-friend";
-        }
-
-        if (user.getId().equals(friend.getId())) {
-            model.addAttribute("error", "You can't add yourself!");
-            return "add-friend";
-        }
-
-        if (connectionRepository.existsByUserAndFriend(user, friend)) {
-            model.addAttribute("error", "You're already connected.");
-            return "add-friend";
-        }
-
-        Connection connection = new Connection();
-        connection.setUser(user);
-        connection.setFriend(friend);
-        connectionRepository.save(connection);
-
-        model.addAttribute("message", "Friend added successfully!");
+        model.addAttribute("message", result);
         return "add-friend";
     }
+
 
 }

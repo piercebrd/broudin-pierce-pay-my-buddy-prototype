@@ -2,12 +2,6 @@ package com.paymybuddy.backend.controller.web;
 
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.UserRepository;
-import com.paymybuddy.backend.security.JwtUtil;
-import com.paymybuddy.backend.service.FriendService;
-import com.paymybuddy.backend.service.TransactionService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -27,15 +23,6 @@ public class HtmlAuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private FriendService friendService;
-
-    @Autowired
-    private TransactionService transactionService;
-
     @ModelAttribute("requestURI")
     public String requestURI(HttpServletRequest request) {
         return request.getRequestURI();
@@ -45,43 +32,21 @@ public class HtmlAuthController {
     public String loginPage() {
         return "login";
     }
-    @PostMapping("/login-form")
-    public String loginForm(@RequestParam String email,
-                            @RequestParam String password,
-                            Model model,
-                            HttpServletResponse response) {
-
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            String jwt = jwtUtil.generateToken(email);
-
-            Cookie jwtCookie = new Cookie("jwt", jwt);
-            jwtCookie.setHttpOnly(true);
-            jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(60 * 60);
-            response.addCookie(jwtCookie);
-
-            return "redirect:/home";
-        }
-
-        model.addAttribute("error", "Invalid email or password");
-        return "login";
-    }
 
     @GetMapping("/logout")
-    public String logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwt", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    public String logout(HttpServletRequest request) {
+        request.getSession().invalidate();
         return "redirect:/login";
     }
 
     @GetMapping("/profile")
-    public String profilePage(Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
+    public String profilePage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+
+        User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         return "profile";
     }
@@ -105,17 +70,22 @@ public class HtmlAuthController {
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password)); // Encrypt password
         user.setBalance(BigDecimal.ZERO);
         userRepository.save(user);
 
         return "redirect:/login";
     }
 
+
     @GetMapping("/profile/edit")
-    public String showEditProfileForm(Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
+    public String showEditProfileForm(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+
+        User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         return "edit-profile";
     }
@@ -123,10 +93,15 @@ public class HtmlAuthController {
     @PostMapping("/profile/edit")
     public String updateProfile(@RequestParam String username,
                                 @RequestParam String password,
-                                Model model) {
+                                Model model,
+                                HttpServletRequest request) {
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            return "redirect:/login";
+        }
+
+        User user = (User) session.getAttribute("user");
 
         user.setUsername(username);
         if (!password.isBlank()) {
@@ -134,9 +109,8 @@ public class HtmlAuthController {
         }
 
         userRepository.save(user);
-        model.addAttribute("message", "Profil mis à jour avec succès.");
+        session.setAttribute("user", user);  // Update session user
+        model.addAttribute("message", "Profile updated successfully.");
         return "redirect:/profile";
     }
-
-
 }

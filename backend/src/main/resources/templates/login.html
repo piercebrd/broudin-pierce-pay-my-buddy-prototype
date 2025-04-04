@@ -58,11 +58,14 @@
 <div class="login-container">
   <h1>Pay My Buddy</h1>
 
-  <form th:action="@{/login-form}" method="post">
-    <input type="email" name="email" placeholder="Mail" required />
-    <input type="password" name="password" placeholder="Mot de passe" required />
+  <form action="/login-form" method="post">
+    <input type="email" name="username" placeholder="Mail" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
     <button type="submit">Se connecter</button>
   </form>
+  <div th:if="${param.error}">
+    <p style="color: red;">Invalid email or password</p>
+  </div>
 
   <div class="error-message" th:if="${error}" th:text="${error}"></div>
 </div>

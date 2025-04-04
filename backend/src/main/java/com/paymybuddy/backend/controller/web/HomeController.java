@@ -1,12 +1,10 @@
 package com.paymybuddy.backend.controller.web;
 
-import com.paymybuddy.backend.entity.Transaction;
 import com.paymybuddy.backend.entity.User;
 import com.paymybuddy.backend.repository.UserRepository;
 import com.paymybuddy.backend.service.FriendService;
 import com.paymybuddy.backend.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +26,6 @@ public class HomeController {
 
     @GetMapping("/home")
     public String showHomePage(Model model) {
-        System.out.println("Redirected to /home");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         System.out.println("Transactions: " + transactionService.findBySender(user));

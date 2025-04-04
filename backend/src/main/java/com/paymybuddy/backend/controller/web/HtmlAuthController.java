@@ -1,8 +1,10 @@
 package com.paymybuddy.backend.controller.web;
 
 import com.paymybuddy.backend.entity.User;
+import com.paymybuddy.backend.repository.UserRepository;
 import com.paymybuddy.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,9 @@ public class HtmlAuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    UserRepository userRepository;
 
     @ModelAttribute("requestURI")
     public String requestURI(HttpServletRequest request) {
@@ -51,13 +56,16 @@ public class HtmlAuthController {
     }
 
     @GetMapping("/profile")
-    public String profilePage(Model model, HttpServletRequest request) {
-        User user = authService.getSessionUser(request.getSession(false));
+    public String profilePage(Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+
         if (user == null) return "redirect:/login";
 
         model.addAttribute("user", user);
         return "profile";
     }
+
 
     @GetMapping("/profile/edit")
     public String showEditProfileForm(Model model, HttpServletRequest request) {

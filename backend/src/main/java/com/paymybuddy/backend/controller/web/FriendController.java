@@ -31,7 +31,7 @@ public class FriendController {
         String result = friendService.addFriend(userEmail, friendEmail);
 
         model.addAttribute("message", result);
-        return "add-friend";
+        return "redirect:/add-friend";
     }
 
 

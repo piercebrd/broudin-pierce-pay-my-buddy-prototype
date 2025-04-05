@@ -1,20 +1,21 @@
 # Pay My Buddy – Prototype
 
-This repository contains the database and application prototype for **Pay My Buddy**, developed using Java and MySQL.
+This repository contains the database and application prototype for **Pay My Buddy**, developed using Java and Spring Boot with an updated database structure.
 
 ## Contents
 
-- Physical Data Model (see below)
-- SQL scripts to create the schema
-- Java DAL (Data Access Layer) with transaction handling
-- Secure DB connection
-- Web interface using DAL logic
+- Updated Physical Data Model (see below)
+- Spring Boot backend (Java 21)
+- Thymeleaf-based web frontend
+- REST and HTML controllers
+- Secure session-based authentication (Spring Security)
+- Integration tests using JUnit & MockMvc
 
 ---
 
-## Physical Data Model (MPD)
+## Updated Physical Data Model (MPD)
 
-The following diagram represents the physical data model for the Pay My Buddy prototype, based on the UML class diagram.
+The following diagram represents the physical data model for the Pay My Buddy prototype, aligned with the current JPA entity structure.
 
 ### MPD Diagram
 
@@ -26,10 +27,11 @@ The following diagram represents the physical data model for the Pay My Buddy pr
 
 | Column     | Type          | Constraints                  |
 |------------|---------------|------------------------------|
-| id         | INT           | PK, AUTO_INCREMENT           |
+| id         | BIGINT        | PK, AUTO_INCREMENT           |
 | username   | VARCHAR(255)  | NOT NULL                     |
 | email      | VARCHAR(255)  | UNIQUE, NOT NULL             |
 | password   | VARCHAR(255)  | NOT NULL                     |
+| balance    | DECIMAL(10,2) | DEFAULT 0.00, NOT NULL       |
 | created_at | DATETIME      | DEFAULT CURRENT_TIMESTAMP    |
 
 ---
@@ -38,23 +40,21 @@ The following diagram represents the physical data model for the Pay My Buddy pr
 
 | Column       | Type           | Constraints                          |
 |--------------|----------------|--------------------------------------|
-| id           | INT            | PK, AUTO_INCREMENT                   |
-| sender_id    | INT            | FK → users(id), NOT NULL             |
-| receiver_id  | INT            | FK → users(id), NOT NULL             |
+| id           | BIGINT         | PK, AUTO_INCREMENT                   |
+| sender_id    | BIGINT         | FK → users(id), NOT NULL             |
+| receiver_id  | BIGINT         | FK → users(id), NOT NULL             |
 | description  | VARCHAR(500)   | NULL                                 |
 | amount       | DECIMAL(10,2)  | NOT NULL                             |
 | created_at   | DATETIME       | DEFAULT CURRENT_TIMESTAMP            |
 
 ---
 
-#### `connections`
+#### `user_connections`
 
 | Column      | Type      | Constraints                                |
 |-------------|-----------|--------------------------------------------|
-| id          | INT       | PK, AUTO_INCREMENT                         |
-| user_id     | INT       | FK → users(id), NOT NULL                   |
-| friend_id   | INT       | FK → users(id), NOT NULL                   |
-| created_at  | DATETIME  | DEFAULT CURRENT_TIMESTAMP                  |
+| user_id     | BIGINT    | FK → users(id), NOT NULL                   |
+| friend_id   | BIGINT    | FK → users(id), NOT NULL                   |
 | UNIQUE(user_id, friend_id) – prevents duplicate friendships           |
 
 ---
@@ -62,8 +62,29 @@ The following diagram represents the physical data model for the Pay My Buddy pr
 ## Relationships
 
 - A user can send and receive many transactions.
-- Users can connect to each other (many-to-many) via the `connections` table.
-- All foreign keys are defined to ensure referential integrity.
+- Users can connect to each other (many-to-many) via `user_connections`.
+- All foreign keys are defined using JPA with referential integrity.
+
+---
+
+## Authentication & Security
+
+- Custom `LoginSuccessHandler` stores authenticated user in session.
+- Access control via `SecurityConfig` using Spring Security.
+- Public pages: `/login`, `/register`
+- All other routes require authentication
+
+---
+
+## Integration Testing
+
+- Written using Spring Boot Test + MockMvc
+- Test classes:
+  - `HtmlAuthControllerIntegrationTest`
+  - `HomeIntegrationTest`
+  - `FriendIntegrationTest`
+  - `TransactionIntegrationTest`
+- Sample data loaded with `@Sql(test-data.sql)`
 
 ---
 

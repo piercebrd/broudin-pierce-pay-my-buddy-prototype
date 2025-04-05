@@ -59,12 +59,10 @@ public class HtmlAuthController {
     public String profilePage(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElse(null);
-
-        if (user == null) return "redirect:/login";
-
         model.addAttribute("user", user);
         return "profile";
     }
+
 
 
     @GetMapping("/profile/edit")

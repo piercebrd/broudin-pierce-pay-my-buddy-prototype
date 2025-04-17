@@ -28,7 +28,6 @@ public class User {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
 
-    // NEW: Connections (Friends)
     @ManyToMany
     @JoinTable(
             name = "user_connections",
@@ -37,7 +36,6 @@ public class User {
     )
     private Set<User> connections = new HashSet<>();
 
-    // Getters and Setters for new field
     public Set<User> getConnections() {
         return connections;
     }

@@ -35,7 +35,7 @@ public class AuthService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(rawPassword));
-        user.setBalance(BigDecimal.ZERO);
+        user.setBalance(BigDecimal.TEN);
 
         userRepository.save(user);
         logger.info("User '{}' registered successfully", email);
